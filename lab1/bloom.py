@@ -4,7 +4,7 @@ from hashers import Hashers
 
 
 class BloomFilter:
-    def __init__(self, size, element_limit = 20000, hfc = None):
+    def __init__(self, size, element_limit = 5000, hfc = None):
         self.element_limit = element_limit
         self.size = size
         self.hash_func = Hashers.djb2
@@ -55,7 +55,7 @@ class BloomFilter:
 
 
 class CounterBF(BloomFilter):
-    def __init__(self, size, element_limit=20000, hfc = None):
+    def __init__(self, size, element_limit=5000, hfc = None):
         super().__init__(size, element_limit, hfc)
         self.counter = np.zeros(self.size, dtype=int)
 
