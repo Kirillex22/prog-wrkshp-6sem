@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package report;
+
+service ReportService{
+    rpc GetMontlyReport(ReportRequest) returns (ReportResponse);
+    rpc GetMontlyReportFile(ExportReportRequest) returns (ExportReportResponse);
+}
+
+message ReportRequest{
+    string month = 1;
+}
+
+message ReportResponse{
+    double profit_sum = 1;
+    double withdraw_sum = 2;
+    double topup_sum = 3;
+    int32 userid = 4;
+}
+
+message ExportReportRequest{
+    string month = 1;
+    string type = 2;
+}
+
+message ExportReportResponse{
+    string download_url = 1;
+}
