@@ -6,6 +6,8 @@ service UserService{
     rpc Register (RegisterRequest) returns (RegisterResponse);
     rpc Auth (AuthRequest) returns (AuthResponse);
     rpc GetUser (GetUserRequest) returns (GetUserResponse);
+    rpc SetRole (SetRoleRequest) returns (SetRoleResponse);
+    rpc GetUsersList (GetUsersListRequest) returns (GetUsersListResponse);
 }
 
 message RegisterRequest{
@@ -16,6 +18,17 @@ message RegisterRequest{
 
 message RegisterResponse{
     int32 userid = 1;
+    string role = 2;
+}
+
+message SetRoleRequest{
+    int32 userid = 1;
+    string role = 2;
+}
+
+message SetRoleResponse{
+    int32 userid = 1;
+    string role = 2;
 }
 
 message AuthRequest{
@@ -31,7 +44,15 @@ message GetUserRequest{}
 
 message GetUserResponse{
     int32 userid = 1;
-    string full_name = 2;
+    string login = 2;
+    string role = 3;
+    string full_name = 4;
+}
+
+message GetUsersListRequest {}
+
+message GetUsersListResponse{
+    repeated GetUserResponse users = 1;
 }
 
 

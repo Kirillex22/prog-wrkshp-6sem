@@ -1,1 +1,1 @@
-{"7": {"login": "admin", "password": "$2b$12$y8GFkJ.HCB/rZajDDR.t..B42lcdMw84l4d/oVLCQsJPVhZURkVji", "fullName": "admin"}}
+{"1": {"login": "admin", "password": "$2b$12$qvPZF2nk2FTtdUblKDk1x.y8.TTAGX4n0nyApOFnz3Qoy264Cm1la", "full_name": "ADMIN_ACCOUNT", "role": "ADMIN"}, "7": {"login": "test", "password": "$2b$12$NguXCLrczg/CaKOIfE6sX.1m4GwDsgZfJ3.WaO3WmJ.2R6XUBhxgi", "fullName": "TEST_ACCOUNT", "role": "ADMIN"}}

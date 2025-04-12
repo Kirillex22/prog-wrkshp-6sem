@@ -45,6 +45,11 @@ class TransactionServiceStub(object):
                 request_serializer=transaction__pb2.TransactionSetRequest.SerializeToString,
                 response_deserializer=transaction__pb2.TransactionSetResponse.FromString,
                 _registered_method=True)
+        self.GetAllTransactionSet = channel.unary_unary(
+                '/transaction.TransactionService/GetAllTransactionSet',
+                request_serializer=transaction__pb2.AllTransactionSetRequest.SerializeToString,
+                response_deserializer=transaction__pb2.TransactionSetResponse.FromString,
+                _registered_method=True)
 
 
 class TransactionServiceServicer(object):
@@ -62,6 +67,12 @@ class TransactionServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetAllTransactionSet(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_TransactionServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -73,6 +84,11 @@ def add_TransactionServiceServicer_to_server(servicer, server):
             'GetTransactionSet': grpc.unary_unary_rpc_method_handler(
                     servicer.GetTransactionSet,
                     request_deserializer=transaction__pb2.TransactionSetRequest.FromString,
+                    response_serializer=transaction__pb2.TransactionSetResponse.SerializeToString,
+            ),
+            'GetAllTransactionSet': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetAllTransactionSet,
+                    request_deserializer=transaction__pb2.AllTransactionSetRequest.FromString,
                     response_serializer=transaction__pb2.TransactionSetResponse.SerializeToString,
             ),
     }
@@ -129,6 +145,33 @@ class TransactionService(object):
             target,
             '/transaction.TransactionService/GetTransactionSet',
             transaction__pb2.TransactionSetRequest.SerializeToString,
+            transaction__pb2.TransactionSetResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetAllTransactionSet(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/transaction.TransactionService/GetAllTransactionSet',
+            transaction__pb2.AllTransactionSetRequest.SerializeToString,
             transaction__pb2.TransactionSetResponse.FromString,
             options,
             channel_credentials,

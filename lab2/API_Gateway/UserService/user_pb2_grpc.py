@@ -50,6 +50,16 @@ class UserServiceStub(object):
                 request_serializer=user__pb2.GetUserRequest.SerializeToString,
                 response_deserializer=user__pb2.GetUserResponse.FromString,
                 _registered_method=True)
+        self.SetRole = channel.unary_unary(
+                '/user.UserService/SetRole',
+                request_serializer=user__pb2.SetRoleRequest.SerializeToString,
+                response_deserializer=user__pb2.SetRoleResponse.FromString,
+                _registered_method=True)
+        self.GetUsersList = channel.unary_unary(
+                '/user.UserService/GetUsersList',
+                request_serializer=user__pb2.GetUsersListRequest.SerializeToString,
+                response_deserializer=user__pb2.GetUsersListResponse.FromString,
+                _registered_method=True)
 
 
 class UserServiceServicer(object):
@@ -73,6 +83,18 @@ class UserServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SetRole(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetUsersList(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_UserServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -90,6 +112,16 @@ def add_UserServiceServicer_to_server(servicer, server):
                     servicer.GetUser,
                     request_deserializer=user__pb2.GetUserRequest.FromString,
                     response_serializer=user__pb2.GetUserResponse.SerializeToString,
+            ),
+            'SetRole': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetRole,
+                    request_deserializer=user__pb2.SetRoleRequest.FromString,
+                    response_serializer=user__pb2.SetRoleResponse.SerializeToString,
+            ),
+            'GetUsersList': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetUsersList,
+                    request_deserializer=user__pb2.GetUsersListRequest.FromString,
+                    response_serializer=user__pb2.GetUsersListResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -173,6 +205,60 @@ class UserService(object):
             '/user.UserService/GetUser',
             user__pb2.GetUserRequest.SerializeToString,
             user__pb2.GetUserResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SetRole(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/user.UserService/SetRole',
+            user__pb2.SetRoleRequest.SerializeToString,
+            user__pb2.SetRoleResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetUsersList(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/user.UserService/GetUsersList',
+            user__pb2.GetUsersListRequest.SerializeToString,
+            user__pb2.GetUsersListResponse.FromString,
             options,
             channel_credentials,
             insecure,

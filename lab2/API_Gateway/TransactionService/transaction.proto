@@ -5,6 +5,7 @@ package transaction;
 service TransactionService{
     rpc AddTransaction(TransactionRequest) returns (TransactionResponse);
     rpc GetTransactionSet(TransactionSetRequest) returns (TransactionSetResponse);
+    rpc GetAllTransactionSet(AllTransactionSetRequest) returns (TransactionSetResponse);
 }
 
 message TransactionRequest{
@@ -24,6 +25,8 @@ message TransactionResponse{
 message TransactionSetRequest{
     string month = 1;
 }
+
+message AllTransactionSetRequest {}
 
 message TransactionSetResponse{
     repeated TransactionResponse transactions = 1;

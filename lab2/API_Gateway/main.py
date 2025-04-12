@@ -26,4 +26,3 @@ async def login_for_access_token(
 
     token = Token(access_token=response.token, token_type="Bearer")
     return token
-

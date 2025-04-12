@@ -22,3 +22,4 @@ async def add_transaction(
         return MessageToDict(response)
     except grpc.RpcError as e:
         exception_handler(e)
+

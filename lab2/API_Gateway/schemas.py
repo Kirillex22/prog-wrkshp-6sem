@@ -86,3 +86,20 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
+
+class UpdateUserRoleRequest(BaseModel):
+    userid: int
+    role: str
+
+    @validator("role")
+    def check_role(cls, value):
+        if value not in ["ADMIN", "DEFAULT"]:
+            raise ValueError(f"Role {value} is not provided")
+        return value
+
+
+class UpdateUserRoleResponse(BaseModel):
+    userid: int
+    role: str
+
+
