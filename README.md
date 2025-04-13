@@ -18,7 +18,7 @@ ADMIN_ROLE=ADMIN
 
 ### run: 
 create and fill .env  
-create and run venv  
+create venv  
 activate venv  
 pip install -r requirements.txt  
 python UserService/server.py  
