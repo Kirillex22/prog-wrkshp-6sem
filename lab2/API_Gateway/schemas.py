@@ -1,28 +1,11 @@
 from datetime import datetime
 from typing import Optional
-import re
 from pydantic import BaseModel, validator, confloat, conint, ConfigDict, AliasGenerator, Field
-
-
-def to_snake_case(string: str) -> str:
-    # Преобразует camelCase в snake_case
-    return re.sub(r'([a-z])([A-Z])', r'\1_\2', string).lower()
 
 
 class RegisterUserRequest(BaseModel):
     login: str
     password: str
-    full_name: str
-
-
-class RegisterUserResponse(BaseModel):
-    userid: int
-
-    class Config:
-        alias_generator = to_snake_case
-
-class GetUserResponse(BaseModel):
-    login: str
     full_name: str
 
 
@@ -36,13 +19,6 @@ class TransactionRequest(BaseModel):
         if value not in ["withdraw", "topup"]:
             raise ValueError(f"Transaction {value} is not allowed")
         return value
-
-
-class TransactionResponse(BaseModel):
-    type: str
-    count: float
-    source: str
-    timestamp: datetime
 
 
 class ReportRequest(BaseModel):
@@ -63,8 +39,6 @@ class ReportResponse(BaseModel):
     topup_sum: Optional[float] = Field(None, alias="topupSum")
     userid: int
 
-    class Config:
-        alias_generator = to_snake_case
 
 
 class ExportReportRequest(BaseModel):
@@ -83,7 +57,7 @@ class ExportReportResponse(BaseModel):
 
 
 class Token(BaseModel):
-    access_token: str
+    token: str
     token_type: str
 
 
@@ -93,7 +67,7 @@ class UpdateUserRoleRequest(BaseModel):
 
     @validator("role")
     def check_role(cls, value):
-        if value not in ["ADMIN", "DEFAULT"]:
+        if value not in ["ADMIN", "USER"]:
             raise ValueError(f"Role {value} is not provided")
         return value
 
@@ -103,3 +77,17 @@ class UpdateUserRoleResponse(BaseModel):
     role: str
 
 
+class GetMontlyTransactionsRequest(BaseModel):
+    month: str
+
+    @validator("month")
+    def check_month(cls, value):
+        try:
+            datetime.strptime(value, "%Y-%m")
+            return value
+        except ValueError:
+            raise ValueError(f"Date {value} is not valid")
+
+
+class GetTransactionsResponse(BaseModel):
+    transactions: list

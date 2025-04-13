@@ -45,6 +45,11 @@ class UserServiceStub(object):
                 request_serializer=user__pb2.AuthRequest.SerializeToString,
                 response_deserializer=user__pb2.AuthResponse.FromString,
                 _registered_method=True)
+        self.ReAuth = channel.unary_unary(
+                '/user.UserService/ReAuth',
+                request_serializer=user__pb2.ReAuthRequest.SerializeToString,
+                response_deserializer=user__pb2.ReAuthResponse.FromString,
+                _registered_method=True)
         self.GetUser = channel.unary_unary(
                 '/user.UserService/GetUser',
                 request_serializer=user__pb2.GetUserRequest.SerializeToString,
@@ -72,6 +77,12 @@ class UserServiceServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def Auth(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ReAuth(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -107,6 +118,11 @@ def add_UserServiceServicer_to_server(servicer, server):
                     servicer.Auth,
                     request_deserializer=user__pb2.AuthRequest.FromString,
                     response_serializer=user__pb2.AuthResponse.SerializeToString,
+            ),
+            'ReAuth': grpc.unary_unary_rpc_method_handler(
+                    servicer.ReAuth,
+                    request_deserializer=user__pb2.ReAuthRequest.FromString,
+                    response_serializer=user__pb2.ReAuthResponse.SerializeToString,
             ),
             'GetUser': grpc.unary_unary_rpc_method_handler(
                     servicer.GetUser,
@@ -178,6 +194,33 @@ class UserService(object):
             '/user.UserService/Auth',
             user__pb2.AuthRequest.SerializeToString,
             user__pb2.AuthResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ReAuth(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/user.UserService/ReAuth',
+            user__pb2.ReAuthRequest.SerializeToString,
+            user__pb2.ReAuthResponse.FromString,
             options,
             channel_credentials,
             insecure,

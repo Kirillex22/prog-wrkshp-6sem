@@ -63,10 +63,12 @@ class ReportService(report_pb2_grpc.ReportServiceServicer):
         try:
             sub_request = self.client.getMontlyReportRequest(month = request.month)
             metadata = dict(context.invocation_metadata())
-            metadata = [('authorization', metadata.get('authorization'))]
-            response = self.client.stub.GetTransactionSet(sub_request, metadata=metadata)
             token = metadata.get('authorization')
             data = get_data_from_token(token)
+
+            metadata = [('authorization', token)]
+            response = self.client.stub.GetTransactionSet(sub_request, metadata=metadata)
+
 
             if data['role'] == ADMIN_ROLE:
                 report = make_report(response.transactions)
@@ -85,10 +87,12 @@ class ReportService(report_pb2_grpc.ReportServiceServicer):
         try:
             sub_request = self.client.getMontlyReportRequest(month=request.month)
             metadata = dict(context.invocation_metadata())
-            metadata = [('authorization', metadata.get('authorization'))]
-            response = self.client.stub.GetTransactionSet(sub_request, metadata=metadata)
             token = metadata.get('authorization')
             data = get_data_from_token(token)
+
+            metadata = [('authorization', token)]
+            response = self.client.stub.GetTransactionSet(sub_request, metadata=metadata)
+
 
             if data['role'] == ADMIN_ROLE:
                 path = make_serialized(request.type, response.transactions)

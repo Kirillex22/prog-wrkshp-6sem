@@ -14,14 +14,21 @@ from grpc import ServerInterceptor
 
 # ----------------------------------------------------
 load_dotenv()
+
 SECRET_KEY = os.getenv("JWT_SECRET_KEY")
-users = None
-path = 'UserService/users.json'
 DEFAULT_ROLE = os.getenv("DEFAULT_ROLE")
 ADMIN_ROLE = os.getenv("ADMIN_ROLE")
+ACCESS_TOKEN_TYPE = os.getenv("ACCESS_TOKEN_TYPE")
+REFRESH_TOKEN_TYPE = os.getenv("REFRESH_TOKEN_TYPE")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
+REFRESH_TOKEN_EXPIRE_DAYS = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS"))
+
+users = None
+path = 'UserService/users.json'
 EXCLUDED_METHODS = {
     "/user.UserService/Auth",
-    "/user.UserService/Register"
+    "/user.UserService/Register",
+    "/user.UserService/ReAuth"
 }
 
 with open(path, 'r') as f:
@@ -106,7 +113,6 @@ def startup():
             'full_name': 'ADMIN_ACCOUNT',
             'role': ADMIN_ROLE
         }
-
 # ----------------------------------------------------
 
 startup()
@@ -123,7 +129,6 @@ class AuthInterceptor(ServerInterceptor):
 
     def intercept_service(self, continuation, handler_call_details):
         method = handler_call_details.method
-
         if method in EXCLUDED_METHODS:
             return continuation(handler_call_details)
 
@@ -138,7 +143,9 @@ class AuthInterceptor(ServerInterceptor):
             context = grpc.ServicerContext()
             context.abort(grpc.StatusCode.UNAUTHENTICATED, 'Missing token')
         try:
-            jwt.decode(token.split(" ")[1], SECRET_KEY, algorithms=["HS256"])
+            decoded_token = jwt.decode(token.split(" ")[1], SECRET_KEY, algorithms=["HS256"])
+            if decoded_token["token_type"] != ACCESS_TOKEN_TYPE:
+                return self._unauth("Token is not an access token")
 
         except jwt.ExpiredSignatureError:
             return self._unauth("Token has expired")
@@ -167,13 +174,38 @@ class UserService(user_pb2_grpc.UserServiceServicer):
             context.set_details('User not found')
             return user_pb2.AuthResponse()
 
-        payload = {
+        access_token_payload = {
             "userid": userid,
             "role": users[userid].get("role", None),
-            "exp": datetime.now(timezone.utc) + timedelta(minutes=10)
+            "token_type": ACCESS_TOKEN_TYPE,
+            "exp": datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         }
-        token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
-        return user_pb2.AuthResponse(token=token)
+
+        refresh_token_payload = {
+            "userid": userid,
+            "token_type": REFRESH_TOKEN_TYPE,
+            "exp": datetime.now(timezone.utc) + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
+        }
+
+        access_token = jwt.encode(access_token_payload, SECRET_KEY, algorithm="HS256")
+        refresh_token = jwt.encode(refresh_token_payload, SECRET_KEY, algorithm="HS256")
+
+        return user_pb2.AuthResponse(access_token=access_token, refresh_token=refresh_token)
+
+
+    def ReAuth(self, request, context):
+        token = request.refresh_token
+        userid = get_user_from_token(token)['userid']
+
+        access_token_payload = {
+            "userid": userid,
+            "role": users[userid].get("role", None),
+            "token_type": ACCESS_TOKEN_TYPE,
+            "exp": datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        }
+
+        access_token = jwt.encode(access_token_payload, SECRET_KEY, algorithm="HS256")
+        return user_pb2.ReAuthResponse(access_token=access_token)
 
 
     def GetUser(self, request, context):
@@ -199,6 +231,11 @@ class UserService(user_pb2_grpc.UserServiceServicer):
                 target_userid, target_role = request.userid, request.role
                 user = switch_user_role(target_userid, target_role)
                 return user_pb2.SetRoleResponse(userid = target_userid, role = user['role'])
+
+            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
+            context.set_details('User is not an admin')
+            return user_pb2.SetRoleResponse()
+
         except:
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
             context.set_details('User not found')

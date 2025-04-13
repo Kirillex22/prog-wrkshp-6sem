@@ -134,7 +134,7 @@ class TransactionService(transaction_pb2_grpc.TransactionServiceServicer):
         return transaction_pb2.TransactionSetResponse()
 
 
-    def GetAllTransactions(self, request, context):
+    def GetAllTransactionSet(self, request, context):
         metadata = dict(context.invocation_metadata())
         token = metadata.get('authorization')
         data = get_data_from_token(token)

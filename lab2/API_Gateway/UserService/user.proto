@@ -5,6 +5,7 @@ package user;
 service UserService{
     rpc Register (RegisterRequest) returns (RegisterResponse);
     rpc Auth (AuthRequest) returns (AuthResponse);
+    rpc ReAuth (ReAuthRequest) returns (ReAuthResponse);
     rpc GetUser (GetUserRequest) returns (GetUserResponse);
     rpc SetRole (SetRoleRequest) returns (SetRoleResponse);
     rpc GetUsersList (GetUsersListRequest) returns (GetUsersListResponse);
@@ -37,7 +38,16 @@ message AuthRequest{
 }
 
 message AuthResponse{
-    string token = 1;
+    string access_token = 1;
+    string refresh_token = 2;
+}
+
+message ReAuthRequest{
+    string refresh_token = 1;
+}
+
+message ReAuthResponse{
+    string access_token = 1;
 }
 
 message GetUserRequest{}
