@@ -43,6 +43,9 @@ async def get_all_transactions(
     request = transaction_pb2.AllTransactionSetRequest()
     try:
         response = await ts_client.GetAllTransactionSet(request, metadata=make_metadata(access_token))
-        return MessageToDict(response)
+        transactions = []
+        for t in response.transactions:
+            transactions.append(TransactionResponse(**MessageToDict(t)))
+        return GetTransactionsResponse(transactions=transactions)
     except grpc.RpcError as e:
         exception_handler(e)

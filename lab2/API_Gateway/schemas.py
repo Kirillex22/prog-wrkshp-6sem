@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel, validator, confloat, conint, ConfigDict, AliasGenerator, Field
 
 
@@ -97,4 +97,4 @@ class GetMontlyTransactionsRequest(BaseModel):
 
 
 class GetTransactionsResponse(BaseModel):
-    transactions: list
+    transactions: List[TransactionResponse]
