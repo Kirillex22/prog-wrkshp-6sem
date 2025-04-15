@@ -21,6 +21,13 @@ class TransactionRequest(BaseModel):
         return value
 
 
+class TransactionResponse(BaseModel):
+    type: str
+    count: float
+    source: str
+    timestamp: datetime
+
+
 class ReportRequest(BaseModel):
     month: str
 
