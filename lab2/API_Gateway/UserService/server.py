@@ -224,11 +224,17 @@ class UserService(user_pb2_grpc.UserServiceServicer):
     def SetRole(self, request, context):
         metadata = dict(context.invocation_metadata())
         token = metadata.get('authorization')
-        user = get_user_from_token(token)['user']
+        user_model = get_user_from_token(token)
+        user, current_userid = user_model['user'], user_model['userid']
 
         try:
             if user.get('role', None) == ADMIN_ROLE:
                 target_userid, target_role = request.userid, request.role
+                if target_userid == current_userid:
+                    context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
+                    context.set_details('Destructive operation')
+                    return user_pb2.SetRoleResponse()
+
                 user = switch_user_role(target_userid, target_role)
                 return user_pb2.SetRoleResponse(userid = target_userid, role = user['role'])
 
