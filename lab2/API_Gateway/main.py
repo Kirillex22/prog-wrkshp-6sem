@@ -16,5 +16,3 @@ app.include_router(auth_router, prefix="/auth", tags=["Auth Router"])
 @app.get("/", include_in_schema=False)
 def redirect_to_docs():
     return RedirectResponse(url="/docs")
-
-

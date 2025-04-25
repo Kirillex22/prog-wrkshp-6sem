@@ -1,6 +1,15 @@
 from datetime import datetime
 from typing import Optional, List
 from pydantic import BaseModel, validator, confloat, conint, ConfigDict, AliasGenerator, Field
+import os
+
+
+USER_ROLE = str(os.getenv('USER_ROLE'))
+ADMIN_ROLE = str(os.getenv('ADMIN_ROLE'))
+
+ROLES = [USER_ROLE, ADMIN_ROLE]
+TRANSACTIONS_TYPES = ['withdraw', 'topup']
+FILE_TYPES = ['json', 'csv']
 
 
 class RegisterUserRequest(BaseModel):
@@ -10,9 +19,9 @@ class RegisterUserRequest(BaseModel):
 
 
 class TransactionRequest(BaseModel):
-    type: str
+    type: str = Field( ..., description='Тип транзакции. Снятие: withdraw, Пополнение: topup')
     count: confloat(ge=0)
-    source: str
+    source: str = Field( ..., description='Источник транзакции.')
 
     @validator("type")
     def check_type(cls, value):
@@ -29,7 +38,7 @@ class TransactionResponse(BaseModel):
 
 
 class ReportRequest(BaseModel):
-    month: str
+    month: str = Field( ..., description='Месяц, за который нужен отчет. В формате ГГГГ-ММ')
 
     @validator("month")
     def check_month(cls, value):
@@ -47,10 +56,9 @@ class ReportResponse(BaseModel):
     userid: int
 
 
-
 class ExportReportRequest(BaseModel):
-    month: str
-    type: str
+    month: str = Field( ..., description='Месяц, за который нужен отчет. В формате ГГГГ-ММ')
+    type: str = Field( ..., description='Тип создаваемого файла. Допустимо: json, csv.')
 
     @validator("type")
     def check_type(cls, value):
@@ -69,12 +77,12 @@ class Token(BaseModel):
 
 
 class UpdateUserRoleRequest(BaseModel):
-    userid: int
-    role: str
+    userid: int = Field( ..., description='ID пользователя.')
+    role: str = Field( ..., description='Целевая роль. Допустимо: ADMIN, USER.')
 
     @validator("role")
     def check_role(cls, value):
-        if value not in ["ADMIN", "USER"]:
+        if value not in [ADMIN_ROLE, USER_ROLE]:
             raise ValueError(f"Role {value} is not provided")
         return value
 
@@ -85,7 +93,7 @@ class UpdateUserRoleResponse(BaseModel):
 
 
 class GetMontlyTransactionsRequest(BaseModel):
-    month: str
+    month: str = Field( ..., description='Месяц, за который нужен отчет. В формате ГГГГ-ММ')
 
     @validator("month")
     def check_month(cls, value):
