@@ -1,0 +1,70 @@
+mutation {
+  registerUser(
+    login: "newuser"
+    password: "password123"
+    full_name: "New User"
+  ) {
+    userid
+    login
+    fullname
+    role
+  }
+}
+
+mutation {
+  loginUser(login: "newuser", password: "password123") {
+    access_token
+    refresh_token
+  }
+}
+
+# -> + request header: "token": "Bearer {access_token}"
+subscription {
+  transactionAdded {
+    userid
+    type
+    count
+    timestamp
+  }
+}
+
+mutation {
+  addTransaction(type: "topup", count: 1500.0, source: "job") {
+    userid
+    type
+    count
+    timestamp
+  }
+}
+
+query {
+  generateAndDownloadReport(month: "2025-06", type: "json")
+}
+
+query {
+  getUser {
+    userid
+    login
+    role
+    full_name
+  }
+}
+
+query {
+  getTransactions(month: "2025-06") {
+    userid
+    type
+    count
+    timestamp
+  }
+}
+
+query {
+  getAllUsers {
+    userid
+    login
+    role
+    full_name
+  }
+}
+

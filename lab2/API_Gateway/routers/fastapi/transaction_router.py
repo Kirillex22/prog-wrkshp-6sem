@@ -1,5 +1,5 @@
 import sys
-sys.path.append('..')
+sys.path.append('../..')
 from fastapi import FastAPI, HTTPException, Depends, APIRouter, Cookie
 from google.protobuf.json_format import MessageToDict
 from TransactionService import transaction_pb2

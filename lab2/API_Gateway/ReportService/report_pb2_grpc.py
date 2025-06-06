@@ -2,8 +2,6 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 import warnings
-import sys
-sys.path.append('.')
 from ReportService import report_pb2 as report__pb2
 
 GRPC_GENERATED_VERSION = '1.71.0'

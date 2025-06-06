@@ -1,5 +1,5 @@
 import sys
-sys.path.append("..")
+sys.path.append("../..")
 from fastapi import FastAPI, HTTPException, Depends, APIRouter, Cookie
 from fastapi.responses import FileResponse
 from google.protobuf.json_format import MessageToDict
@@ -29,8 +29,7 @@ async def get_monthly_report(
 
 @report_router.get('/create/download')
 async def get_montly_report_serialized(
-        access_token: str = Cookie(None),
-        filter: ExportReportRequest = Depends()
+        access_token: str = Cookie(None)
 ):
     request = report_pb2.ExportReportRequest(**filter.dict())
     file_type = filter.type
